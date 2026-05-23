@@ -1,0 +1,89 @@
+# Release workflow for divyastro-mcp.
+#
+# Triggers on tags matching `v*` (e.g. `v0.3.0`). Builds binaries
+# for all 5 release platforms in pure Go (no CGO) and attaches them
+# + a checksum file to the GitHub Release.
+#
+# Manual release flow:
+#
+#   git tag v0.3.0
+#   git push origin v0.3.0
+#   # GitHub Actions builds + uploads, creates draft release
+#   # Edit release notes in GitHub UI, publish
+
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  # Allow manual dispatch for testing the workflow without tagging.
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version string (e.g. 0.3.0-rc1)"
+        required: true
+        default: "0.0.0-test"
+
+permissions:
+  contents: write   # needed to create the release + upload assets
+
+jobs:
+  build:
+    name: Build & release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.25"
+          # cache module downloads to keep CI fast across releases
+          cache: true
+
+      - name: Resolve version
+        id: ver
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            # tag form: refs/tags/v0.3.0  →  0.3.0
+            VERSION="${GITHUB_REF#refs/tags/v}"
+          else
+            VERSION="${{ github.event.inputs.version }}"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Resolved version: $VERSION"
+
+      - name: Run tests
+        run: go test ./... -count=1
+
+      - name: Build all platforms
+        run: make build-all VERSION=${{ steps.ver.outputs.version }}
+
+      - name: Verify a binary boots
+        run: |
+          # The Linux amd64 build runs on the runner. Confirm the
+          # binary fails fast with the expected message when no API
+          # key is set — sanity-checks the auth gate is wired.
+          chmod +x dist/divyastro-mcp-linux-amd64
+          OUTPUT=$(dist/divyastro-mcp-linux-amd64 2>&1 || true)
+          echo "$OUTPUT"
+          echo "$OUTPUT" | grep -q "DIVYASTRO_API_KEY" \
+            || (echo "expected env-var error message; got: $OUTPUT" && exit 1)
+
+      - name: Create or update GitHub Release
+        uses: softprops/action-gh-release@v2
+        # Only on tag pushes — workflow_dispatch runs are for testing.
+        if: github.event_name == 'push'
+        with:
+          name: "divyastro-mcp v${{ steps.ver.outputs.version }}"
+          draft: true
+          generate_release_notes: true
+          files: |
+            dist/divyastro-mcp-darwin-arm64
+            dist/divyastro-mcp-darwin-amd64
+            dist/divyastro-mcp-linux-amd64
+            dist/divyastro-mcp-linux-arm64
+            dist/divyastro-mcp-windows-amd64.exe
+            dist/divyastro-mcp-checksums.txt

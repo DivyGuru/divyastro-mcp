@@ -1,0 +1,24 @@
+# Built binaries
+/divyastro-mcp
+/divyastro-mcp.exe
+/dist/
+
+# Go build artifacts
+*.test
+*.out
+*.prof
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local env (must never be committed)
+.env
+.env.*
+!.env.example
