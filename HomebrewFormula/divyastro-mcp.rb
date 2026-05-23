@@ -36,22 +36,22 @@ class DivyastroMcp < Formula
   on_macos do
     on_arm do
       url "https://github.com/DivyGuru/divyastro-mcp/releases/download/v#{version}/divyastro-mcp-darwin-arm64"
-      sha256 "REPLACE_WITH_DARWIN_ARM64_SHA256"
+      sha256 "010267986f3ed065638f4219bfdf9cca7abc71ddb59f3125b3721955eabe99e8"
     end
     on_intel do
       url "https://github.com/DivyGuru/divyastro-mcp/releases/download/v#{version}/divyastro-mcp-darwin-amd64"
-      sha256 "REPLACE_WITH_DARWIN_AMD64_SHA256"
+      sha256 "76a40df87f8c86368a85cadbd743add0d9111838167894494833e181140b848e"
     end
   end
 
   on_linux do
     on_arm do
       url "https://github.com/DivyGuru/divyastro-mcp/releases/download/v#{version}/divyastro-mcp-linux-arm64"
-      sha256 "REPLACE_WITH_LINUX_ARM64_SHA256"
+      sha256 "4295cde39a1508a136f382fd4eab459a311b689f4cace55b26669e3ad7b209e2"
     end
     on_intel do
       url "https://github.com/DivyGuru/divyastro-mcp/releases/download/v#{version}/divyastro-mcp-linux-amd64"
-      sha256 "REPLACE_WITH_LINUX_AMD64_SHA256"
+      sha256 "ed98f5e1168ef35fffa9012b0c1766d4e10eaacfa702a146fc47315ccd533827"
     end
   end
 
