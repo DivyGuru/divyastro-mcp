@@ -1,4 +1,4 @@
-module github.com/divyguru/divyastro-mcp
+module github.com/DivyGuru/divyastro-mcp
 
 go 1.25.0
 

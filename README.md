@@ -33,7 +33,7 @@ End users don't write code, copy curl commands, or read API docs. They just chat
 ### macOS / Linux — Homebrew (recommended)
 
 ```bash
-brew tap divyguru/divyastro-mcp https://github.com/DivyGuru/divyastro-mcp
+brew tap DivyGuru/divyastro-mcp https://github.com/DivyGuru/divyastro-mcp
 brew install divyastro-mcp
 
 # Verify
