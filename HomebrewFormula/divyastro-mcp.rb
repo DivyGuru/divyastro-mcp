@@ -30,28 +30,28 @@
 class DivyastroMcp < Formula
   desc "DivyAstroAPI MCP server — 72 Vedic + Western astrology tools for Claude Desktop, Cursor, Continue"
   homepage "https://github.com/DivyGuru/divyastro-mcp"
-  version "0.3.0"
+  version "0.3.1"
   license "MIT"
 
   on_macos do
     on_arm do
       url "https://github.com/DivyGuru/divyastro-mcp/releases/download/v#{version}/divyastro-mcp-darwin-arm64"
-      sha256 "010267986f3ed065638f4219bfdf9cca7abc71ddb59f3125b3721955eabe99e8"
+      sha256 "0c831042d448251755a2966b4aeaac79e42c33cc5ae8a77d8a7a52ac96fae893"
     end
     on_intel do
       url "https://github.com/DivyGuru/divyastro-mcp/releases/download/v#{version}/divyastro-mcp-darwin-amd64"
-      sha256 "76a40df87f8c86368a85cadbd743add0d9111838167894494833e181140b848e"
+      sha256 "08c70ddc503507f0c17cdbcadba25fbd85e6964c2f86316de9c390bcbdd1d322"
     end
   end
 
   on_linux do
     on_arm do
       url "https://github.com/DivyGuru/divyastro-mcp/releases/download/v#{version}/divyastro-mcp-linux-arm64"
-      sha256 "4295cde39a1508a136f382fd4eab459a311b689f4cace55b26669e3ad7b209e2"
+      sha256 "07d35ccc9a4647e98d1fc3fe217f4983527b936a2c82c92c4b989c191608cb2a"
     end
     on_intel do
       url "https://github.com/DivyGuru/divyastro-mcp/releases/download/v#{version}/divyastro-mcp-linux-amd64"
-      sha256 "ed98f5e1168ef35fffa9012b0c1766d4e10eaacfa702a146fc47315ccd533827"
+      sha256 "8ef1118a5fbb6b936b444d34dd7412fb384988de47fd98cf4d9b8055f4612de9"
     end
   end
 
