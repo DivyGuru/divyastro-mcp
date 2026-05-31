@@ -4,7 +4,7 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/DivyGuru/divyastro-mcp.svg)](https://pkg.go.dev/github.com/DivyGuru/divyastro-mcp)
 [![Release](https://img.shields.io/github/v/release/DivyGuru/divyastro-mcp)](https://github.com/DivyGuru/divyastro-mcp/releases)
 
-**Model Context Protocol (MCP) server for [DivyAstroAPI](https://divyastroapi.com)** — exposes 72 Vedic & Western astrology tools to AI assistants like Claude Desktop, Cursor, and Continue.dev.
+**Model Context Protocol (MCP) server for [DivyAstroAPI](https://divyastroapi.com)** — exposes 72 Vedic & Western astrology tools to AI assistants like Claude Desktop, Cursor, Continue.dev, and Codex CLI.
 
 End users don't write code, copy curl commands, or read API docs. They just chat with their AI assistant naturally and the assistant invokes the right tool when an astrology question comes up:
 
@@ -76,7 +76,7 @@ make build
 
 Sign up at [divyastroapi.com](https://divyastroapi.com) and create a key from your dashboard. The MCP server uses the same `dv_live_<hex>` keys as direct API access — there's no separate "MCP key".
 
-Free tier (1,000 calls/month, 100/day) is enough to evaluate every tool.
+Free tier (5,000 calls/month, 500/day) is enough to evaluate every tool.
 
 ## Configuring your AI client
 
@@ -123,6 +123,18 @@ Cursor reads `~/.cursor/mcp.json`:
 ```
 
 Restart Cursor (`Cmd-Shift-P → Reload Window`).
+
+### OpenAI Codex CLI
+
+Codex CLI reads `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.divyastro]
+command = "/usr/local/bin/divyastro-mcp"
+env = { DIVYASTRO_API_KEY = "dv_live_REPLACE_WITH_YOUR_KEY" }
+```
+
+Restart Codex and the tools become available in your session.
 
 ### Continue.dev / Windsurf / other MCP clients
 

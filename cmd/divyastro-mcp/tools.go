@@ -77,6 +77,17 @@ func registerAllTools(server *mcp.Server, client *apiClient) {
 	// heliocentric, eclipses, ingresses, retrograde window, astrocartography).
 	// Total: 72 tools.
 	registerV03Tools(server, client)
+
+	// v0.4 — additional western tools (transit calendar, synastry grid,
+	// returns depth, narrative layer, Hellenistic depth, extended bodies,
+	// analytics, primary directions), numerology advanced (personal periods,
+	// challenges, advanced profile), and full tarot suite (5 tools).
+	registerV04Tools(server, client)
+
+	// v0.5 — composite panchang (basic/advanced), lagna table, monthly
+	// calendar, nakshatra prediction, chart astro-details, varshaphal
+	// harsha-bala + mudda-dasha, yearly bhavishyafal, geo reverse.
+	registerV05Tools(server, client)
 }
 
 // rawJSONResult turns an arbitrary JSON-decoded payload into an
