@@ -4,7 +4,7 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/DivyGuru/divyastro-mcp.svg)](https://pkg.go.dev/github.com/DivyGuru/divyastro-mcp)
 [![Release](https://img.shields.io/github/v/release/DivyGuru/divyastro-mcp)](https://github.com/DivyGuru/divyastro-mcp/releases)
 
-**Model Context Protocol (MCP) server for [DivyAstroAPI](https://divyastroapi.com)** — exposes 72 Vedic & Western astrology tools to AI assistants like Claude Desktop, Cursor, Continue.dev, and Codex CLI.
+**Model Context Protocol (MCP) server for [DivyAstroAPI](https://divyastroapi.com)** — exposes 288 Vedic & Western astrology tools to AI assistants like Claude Desktop, Cursor, Continue.dev, and Codex CLI.
 
 End users don't write code, copy curl commands, or read API docs. They just chat with their AI assistant naturally and the assistant invokes the right tool when an astrology question comes up:
 
@@ -142,23 +142,31 @@ Any MCP-aware client supports the same shape — `command` + `env` with the abso
 
 ## Tools
 
-The MCP server exposes 72 tools across Vedic and Western astrology. See [docs/TOOLS.md](docs/TOOLS.md) for the full catalog.
+The MCP server exposes 288 tools across Vedic and Western astrology. See [docs/TOOLS.md](docs/TOOLS.md) for the full catalog.
 
 **High-level coverage:**
 
 | Domain | Count | Examples |
 |---|---|---|
-| Panchang | 6 | `panchang_today`, `panchang_tithi`, `panchang_choghadiya`, `panchang_rahu_kaal` |
-| Birth Chart (Vedic) | 11 | `chart_ascendant`, `chart_planets`, `chart_houses`, `chart_divisional`, `chart_shadbala` |
-| Dasha | 3 | `dasha_current`, `dasha_vimshottari_full`, `dasha_yogini_current` |
-| Compatibility (Milan) | 5 | `match_making_score`, `ashtakoota_breakdown`, `mangal_dosha`, `nadi_dosha`, `vivah_phal` |
-| Muhurta | 3 | `muhurta_vivah`, `muhurta_naamkaran`, `muhurta_best_time` |
-| Transit | 2 | `transits_now`, `sade_sati` |
-| Sky Events | 3 | `eclipses_solar`, `eclipses_lunar`, `festivals_month` |
-| Planet Moments | 2 | `planet_retrograde_window`, `planet_ingress` |
-| Horary / Numerology / Varshaphal | 3 | `prashna_answer`, `numerology_full`, `varshaphal_chart` |
-| Horoscope | 3 | `horoscope_daily`, `horoscope_weekly`, `horoscope_monthly` |
-| Western Astrology | 31 | `western_natal_chart`, `western_synastry`, `western_progressions`, `western_solar_return` |
+| Panchang | 26 | `panchang_today`, `panchang_basic`, `panchang_advanced`, `panchang_nakshatra`, `panchang_yoga`, `panchang_karana`, `panchang_sunrise_sunset`, `panchang_abhijit`, `panchang_siddha_yoga` |
+| Birth Chart (Vedic) | 20 | `chart_ascendant`, `chart_planets`, `chart_houses`, `chart_divisional`, `chart_shadbala`, `chart_bhavabala`, `chart_kp_sublord`, `chart_ghatak` |
+| Dasha | 5 | `dasha_current`, `dasha_vimshottari_full`, `dasha_yogini_current`, `dasha_yogini_full` |
+| Compatibility (Milan) | 14 | `match_making_score`, `mangal_dosha`, `milan_dasha_sync`, `milan_navamsa_compat`, `milan_stree_dirgha` |
+| Muhurta | 11 | `muhurta_vivah`, `muhurta_graha_pravesh`, `muhurta_vyapar`, `muhurta_yatra`, `muhurta_sarvartha_siddhi` |
+| Transit | 9 | `transits_now`, `sade_sati`, `transit_double_transit`, `transit_tarabala`, `transit_vedha`, `transit_small_panoti` |
+| Ashtakavarga | 3 | `ashtakavarga_sarva`, `ashtakavarga_kaksha`, `ashtakavarga_transit_score` |
+| Calendar | 4 | `calendar_adhik_maas`, `calendar_month`, `calendar_ritu`, `calendar_samvatsara` |
+| Sky Events | 4 | `eclipses_solar`, `eclipses_lunar`, `festivals_month`, `festivals_on_date` |
+| Planet Moments | 4 | `planet_retrograde_window`, `planet_ingress`, `planet_combustion_window`, `planet_speed` |
+| Horary (Prashna) | 5 | `prashna_answer`, `prashna_chart`, `prashna_arudha`, `prashna_significators` |
+| Numerology | 7 | `numerology_full`, `numerology_driver`, `numerology_conductor`, `numerology_soul`, `numerology_destiny` |
+| Varshaphal | 8 | `varshaphal_chart`, `varshaphal_lord`, `varshaphal_muntha`, `varshaphal_yoga`, `varshaphal_harsha_bala` |
+| Geo | 3 | `geo_reverse`, `geo_search`, `geo_timezone` |
+| Vedic Narrative | 32 | `narrative_profile`, `narrative_career_outlook`, `narrative_marriage_outlook`, `narrative_yogas`, `narrative_doshas` |
+| Reports | 12 | `report_kundli_brihad`, `report_kundli_detailed`, `report_match_making`, `report_varshaphal` |
+| Vedic Remedies | 1 | `vedic_remedies` |
+| Horoscope | 5 | `horoscope_daily`, `horoscope_weekly`, `narrative_horoscope_daily_by_lagna`, `narrative_horoscope_weekly_by_moon` |
+| Western Astrology | 46 | `western_natal_planets`, `western_synastry`, `western_composite_planets`, `western_davison_houses`, `western_dignities_receptions`, `western_narrative_firdaria` |
 
 ## Troubleshooting
 
@@ -199,7 +207,7 @@ make build-all VERSION=0.3.0
 
 ## Roadmap
 
-- **v0.3.x (current):** Local stdio MCP server, 72 tools
+- **v0.3.x (current):** Local stdio MCP server, 288 tools
 - **v1.0 (planned):** Stable tool surface; semantic versioning kicks in
 - **Remote HTTP MCP (separate project):** Hosted MCP endpoint at `mcp.divyastroapi.com` for ChatGPT and web/mobile MCP clients — tracked separately from this repo
 

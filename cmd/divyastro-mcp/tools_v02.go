@@ -285,19 +285,17 @@ func registerNadiDosha(s *mcp.Server, c *apiClient) {
 		Description: "Check Nadi Dosha — the 8-point koota in Ashtakoota matching that fails when both partners share the same Nadi (Adi/Madhya/Antya). Returns presence + cancellation rules + remedy notes. Use for 'is there nadi dosha', 'nadi compatibility'.",
 		Title:       "Nadi Dosha Check",
 	}, func(ctx context.Context, _ *mcp.CallToolRequest, in AshtakootaInput) (*mcp.CallToolResult, any, error) {
-		q := matchMakingQuery(in)
-		return callPassthrough(ctx, c, "/v1/milan/nadi-dosha", q)
+		return callPassthrough(ctx, c, "/v1/milan/nadi-dosha", boyGirlQuery(in))
 	})
 }
 
 func registerVivahPhal(s *mcp.Server, c *apiClient) {
 	mcp.AddTool(s, &mcp.Tool{
 		Name:        "vivah_phal",
-		Description: "Get Vivah Phal — the marriage outcome reading derived from both partners' charts: longevity of the union, bhakoot/gana balance, and qualitative outlook. Use for 'will the marriage last', 'marriage prediction'.",
+		Description: "Get Vivah Phal — marriage-outcome assessment for a single person's chart: longevity of the union, bhakoot/gana indicators, and qualitative outlook derived from lagna, Mars, Jupiter, and 7th lord positions. Use for 'vivah phal for my chart', 'marriage outcome', 'will my marriage last'.",
 		Title:       "Vivah Phal (Marriage Outcome)",
-	}, func(ctx context.Context, _ *mcp.CallToolRequest, in AshtakootaInput) (*mcp.CallToolResult, any, error) {
-		q := matchMakingQuery(in)
-		return callPassthrough(ctx, c, "/v1/milan/vivah-phal", q)
+	}, func(ctx context.Context, _ *mcp.CallToolRequest, in BirthInput) (*mcp.CallToolResult, any, error) {
+		return callPassthrough(ctx, c, "/v1/milan/vivah-phal", birthPrefixQuery(in))
 	})
 }
 
@@ -307,26 +305,39 @@ func registerAshtakootaBreakdown(s *mcp.Server, c *apiClient) {
 		Description: "Get the full Ashtakoota match-making table — all 8 kootas (varna, vashya, tara, yoni, graha-maitri, gana, bhakoot, nadi) individually with each koota's score, max, reasoning, and any dosha flags. Use for 'detailed kundli matching', 'koota-by-koota analysis'. Pair with match_making_score for the headline total.",
 		Title:       "Ashtakoota Full Breakdown",
 	}, func(ctx context.Context, _ *mcp.CallToolRequest, in AshtakootaInput) (*mcp.CallToolResult, any, error) {
-		q := matchMakingQuery(in)
-		return callPassthrough(ctx, c, "/v1/milan/ashtakoota", q)
+		return callPassthrough(ctx, c, "/v1/milan/ashtakoota", boyGirlQuery(in))
 	})
 }
 
-// matchMakingQuery builds the bride+groom URL parameter set shared by
-// every milan endpoint. Extracted as a helper so the v0.2 milan tools
-// don't duplicate the 10-line query construction.
-func matchMakingQuery(in AshtakootaInput) url.Values {
+// boyGirlQuery builds the boy.*/girl.* URL params that all two-person
+// milan endpoints read via parseBoyGirlMoonInfo / parsePrefixedMoment.
+// API convention: boy = groom (male), girl = bride (female).
+// AshtakootaInput uses Bride*/Groom* names from the user-facing perspective,
+// so Bride → girl.* and Groom → boy.* here.
+func boyGirlQuery(in AshtakootaInput) url.Values {
 	q := url.Values{}
-	q.Set("bride_lat", strconv.FormatFloat(in.BrideLat, 'f', -1, 64))
-	q.Set("bride_lon", strconv.FormatFloat(in.BrideLon, 'f', -1, 64))
-	q.Set("bride_date", in.BrideDate)
-	q.Set("bride_time", in.BrideTime)
-	q.Set("bride_tz", in.BrideTz)
-	q.Set("groom_lat", strconv.FormatFloat(in.GroomLat, 'f', -1, 64))
-	q.Set("groom_lon", strconv.FormatFloat(in.GroomLon, 'f', -1, 64))
-	q.Set("groom_date", in.GroomDate)
-	q.Set("groom_time", in.GroomTime)
-	q.Set("groom_tz", in.GroomTz)
+	q.Set("girl.lat", strconv.FormatFloat(in.BrideLat, 'f', -1, 64))
+	q.Set("girl.lon", strconv.FormatFloat(in.BrideLon, 'f', -1, 64))
+	q.Set("girl.date", in.BrideDate)
+	q.Set("girl.time", in.BrideTime)
+	q.Set("girl.tz", in.BrideTz)
+	q.Set("boy.lat", strconv.FormatFloat(in.GroomLat, 'f', -1, 64))
+	q.Set("boy.lon", strconv.FormatFloat(in.GroomLon, 'f', -1, 64))
+	q.Set("boy.date", in.GroomDate)
+	q.Set("boy.time", in.GroomTime)
+	q.Set("boy.tz", in.GroomTz)
+	return q
+}
+
+// birthPrefixQuery builds the birth.* URL params that single-person
+// milan endpoints read via parseSingleBirthMoonInfo / parsePrefixedMoment.
+func birthPrefixQuery(in BirthInput) url.Values {
+	q := url.Values{}
+	q.Set("birth.lat", strconv.FormatFloat(in.Lat, 'f', -1, 64))
+	q.Set("birth.lon", strconv.FormatFloat(in.Lon, 'f', -1, 64))
+	q.Set("birth.date", in.Date)
+	q.Set("birth.time", in.Time)
+	q.Set("birth.tz", in.Tz)
 	return q
 }
 

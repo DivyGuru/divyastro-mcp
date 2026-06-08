@@ -13,7 +13,7 @@ import (
 //
 // Coverage by group:
 //
-//   - Western natal depth (4)         — houses, aspects, rulerships, transits
+//   - Western natal depth (3)         — houses, aspects, transits
 //   - Western relationships (3)       — synastry aspects/score, composite chart
 //   - Western projection & returns (3) — progressions, solar arc, solar return
 //   - Western transits & narrative (3) — transits-to-natal, aspect/transit interp
@@ -22,11 +22,13 @@ import (
 //   - Extended bodies (2)             — fixed stars, big-four asteroids
 //   - Cosmobiology (4)                — declinations, harmonic, antiscia, midpoint-tree
 //   - Mundane & astrocartography (5)  — heliocentric, eclipses, ingresses, Rx, ACG
+//
+// Note: western_natal_rulerships removed — /v1/western/natal/rulerships does
+// not exist in the API router (no registerRoute or r.Get entry).
 func registerV03Tools(s *mcp.Server, c *apiClient) {
 	// Western natal depth
 	registerWesternNatalHouses(s, c)
 	registerWesternNatalAspects(s, c)
-	registerWesternNatalRulerships(s, c)
 	registerWesternTransitPositions(s, c)
 
 	// Relationships
@@ -178,16 +180,6 @@ func registerWesternNatalAspects(s *mcp.Server, c *apiClient) {
 		Title:       "Western Natal Aspects",
 	}, func(ctx context.Context, _ *mcp.CallToolRequest, in WesternBirthInput) (*mcp.CallToolResult, any, error) {
 		return callPassthrough(ctx, c, "/v1/western/natal/aspects", in.toQuery())
-	})
-}
-
-func registerWesternNatalRulerships(s *mcp.Server, c *apiClient) {
-	mcp.AddTool(s, &mcp.Tool{
-		Name:        "western_natal_rulerships",
-		Description: "Return the house ruler for each of the 12 houses in a Western tropical chart — shows which planet rules each house and where that planet is placed. Supports modern and traditional rulership schemes. Use for 'who rules my 7th house', 'chart ruler', 'planetary rulerships'.",
-		Title:       "Western Natal Rulerships",
-	}, func(ctx context.Context, _ *mcp.CallToolRequest, in WesternBirthInput) (*mcp.CallToolResult, any, error) {
-		return callPassthrough(ctx, c, "/v1/western/natal/rulerships", in.toQuery())
 	})
 }
 
@@ -343,7 +335,7 @@ func registerWesternInterpretAspect(s *mcp.Server, c *apiClient) {
 		q := url.Values{}
 		q.Set("planet_a", in.PlanetA)
 		q.Set("planet_b", in.PlanetB)
-		q.Set("aspect", in.Aspect)
+		q.Set("kind", in.Aspect)
 		if in.Context != "" {
 			q.Set("context", in.Context)
 		}
@@ -367,7 +359,7 @@ func registerWesternInterpretTransit(s *mcp.Server, c *apiClient) {
 		q := url.Values{}
 		q.Set("transit_planet", in.TransitPlanet)
 		q.Set("natal_planet", in.NatalPlanet)
-		q.Set("aspect", in.Aspect)
+		q.Set("kind", in.Aspect)
 		return callPassthrough(ctx, c, "/v1/western/interpretation/transit", q)
 	})
 }

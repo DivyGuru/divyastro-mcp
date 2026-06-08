@@ -88,6 +88,50 @@ func registerAllTools(server *mcp.Server, client *apiClient) {
 	// calendar, nakshatra prediction, chart astro-details, varshaphal
 	// harsha-bala + mudda-dasha, yearly bhavishyafal, geo reverse.
 	registerV05Tools(server, client)
+
+	// v0.8 — 30 tools covering parameterised routes:
+	// ashtakavarga bhinna, chart (single-planet/shadbala-component),
+	// dasha vimshottari drill-down (maha/antar/pratyantar/sookshma) +
+	// yogini-by-name, eclipses-all, geo-place, milan single koota,
+	// vedic narrative (divisional/yoga-by-id/dosha-by-id),
+	// vedic remedies (rule-id/mantra/pooja/vrat),
+	// western (natal-single-planet/lot/asteroid/fixed-star).
+	registerV08Tools(server, client)
+
+	// v0.9 — 17 tools covering panchang sub-endpoints (sunrise-sunset,
+	// moonrise-moonset, nakshatra, yoga, karana, vara, yamaganda, gulika,
+	// abhijit, pradosh-kaal, durmuhurta, hindu-month, panchaka, varjyam,
+	// amrit-kalam, siddha-yoga) + chart ghatak. These were registered via
+	// chi r.Route() in the API (not registerRoute) and missed in initial scan.
+	registerV09Tools(server, client)
+
+	// v0.7 — 60 additional tools: vedic narrative (32: career-outlook/
+	// dasha-phal/dasha-tree-phal/doshas/finance-outlook/horoscope-daily-
+	// by-lagna/by-moon/tamil/weekly-by-lagna/by-moon/house-lord/house-lords-
+	// overview/karakas/lagna/marriage-outlook/milan/moon-sign/nakshatra/
+	// planet-in-house/in-sign/planets-in-houses/in-signs/profile/sade-sati-
+	// history/phase/status/sun-sign/transit-ashtakavarga/double/phal/
+	// varshaphal-themes/yogas), reports (12), vedic-remedies (1),
+	// western-missing (15: astrocartography-local-space/composite-houses/
+	// planets/davison-houses/planets/dignities-receptions/firdaria-narrative/
+	// natal-ascendant/mc/out-of-bounds/planets/solar-return-jd/
+	// transit-summary/horoscope-monthly/weekly).
+	registerV07Tools(server, client)
+
+	// v0.6 — 56 additional tools: ashtakavarga (sarva/kaksha/transit-score),
+	// calendar (adhik-maas/month/ritu/samvatsara), chart (bhavabala/combustion/
+	// graha-yuddha/house-occupants/KP-house-significator/KP-sublord),
+	// dasha yogini full, festivals on-date, geo (search/timezone),
+	// milan (dasha-sync/dhan-yog/longevity/mahendra/navamsa-compat/
+	// santan-yog/shani-dosha/stree-dirgha), muhurta (chandra-bala/
+	// graha-pravesh/panchaka-rahita/sarvartha-siddhi/shubha-yoga/
+	// tara-bala/vyapar/yatra), numerology (conductor/destiny/driver/
+	// personality/soul), panchang (hora-dinman/sankranti),
+	// planet-moments (combustion-window/speed), prashna (arudha/chart/
+	// lagna-lord/significators), transit (ashtakavarga/double-transit/
+	// small-panoti/small-panoti-history/tarabala/vedha),
+	// varshaphal (lord/muntha/solar-return-jd/yoga).
+	registerV06Tools(server, client)
 }
 
 // rawJSONResult turns an arbitrary JSON-decoded payload into an
@@ -258,7 +302,7 @@ func registerMangalDosha(s *mcp.Server, c *apiClient) {
 		Description: "Check whether a birth chart has Mangal Dosha (Manglik condition) — Mars in a position that classically affects marriage. Returns presence flag, sub-rule (BPHS strict / modern North / from Moon), cancellation status, and severity. Use for 'am I Manglik', 'check Mars dosha', 'Manglik or not'.",
 		Title:       "Mangal Dosha Check",
 	}, func(ctx context.Context, _ *mcp.CallToolRequest, in BirthInput) (*mcp.CallToolResult, any, error) {
-		return callPassthrough(ctx, c, "/v1/milan/mangal-dosha", in.toQuery())
+		return callPassthrough(ctx, c, "/v1/milan/mangal-dosha", birthPrefixQuery(in))
 	})
 }
 
@@ -287,18 +331,7 @@ func registerAshtakootaTotal(s *mcp.Server, c *apiClient) {
 		Description: "Compute the Ashtakoota (Guna Milan) compatibility score between a bride and groom — the traditional 36-point Vedic match-making system covering varna, vashya, tara, yoni, graha-maitri, gana, bhakoot, and nadi koota. Returns total score and per-koota breakdown. Use for 'kundli matching', 'match score', 'Guna Milan'.",
 		Title:       "Match Making (Ashtakoota / Guna Milan)",
 	}, func(ctx context.Context, _ *mcp.CallToolRequest, in AshtakootaInput) (*mcp.CallToolResult, any, error) {
-		q := url.Values{}
-		q.Set("bride_lat", strconv.FormatFloat(in.BrideLat, 'f', -1, 64))
-		q.Set("bride_lon", strconv.FormatFloat(in.BrideLon, 'f', -1, 64))
-		q.Set("bride_date", in.BrideDate)
-		q.Set("bride_time", in.BrideTime)
-		q.Set("bride_tz", in.BrideTz)
-		q.Set("groom_lat", strconv.FormatFloat(in.GroomLat, 'f', -1, 64))
-		q.Set("groom_lon", strconv.FormatFloat(in.GroomLon, 'f', -1, 64))
-		q.Set("groom_date", in.GroomDate)
-		q.Set("groom_time", in.GroomTime)
-		q.Set("groom_tz", in.GroomTz)
-		return callPassthrough(ctx, c, "/v1/milan/ashtakoota/total", q)
+		return callPassthrough(ctx, c, "/v1/milan/ashtakoota/total", boyGirlQuery(in))
 	})
 }
 
@@ -312,7 +345,7 @@ func registerSadeSati(s *mcp.Server, c *apiClient) {
 		Description: "Determine whether a person is currently in Saturn's Sade Sati (the 7.5-year transit through the 12th, 1st, and 2nd house from natal Moon) and list past + upcoming Sade Sati windows. Use for 'am I in Sade Sati', 'when does Saturn finish', 'Saturn transit phase'.",
 		Title:       "Sade Sati Status",
 	}, func(ctx context.Context, _ *mcp.CallToolRequest, in BirthInput) (*mcp.CallToolResult, any, error) {
-		return callPassthrough(ctx, c, "/v1/transit/sade-sati", in.toQuery())
+		return callPassthrough(ctx, c, "/v1/transit/sade-sati", birthPrefixQuery(in))
 	})
 }
 
