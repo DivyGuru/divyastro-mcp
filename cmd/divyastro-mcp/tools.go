@@ -105,6 +105,11 @@ func registerAllTools(server *mcp.Server, client *apiClient) {
 	// chi r.Route() in the API (not registerRoute) and missed in initial scan.
 	registerV09Tools(server, client)
 
+	// v0.10 — 13 tools closing the 2026-07-03 API sync audit gap:
+	// Char Dasha (5), Lal Kitab core (3), remedy catalog (daan/
+	// rudraksha/yantra by-id + Lal Kitab remedy list/lookup).
+	registerV10Tools(server, client)
+
 	// v0.7 — 60 additional tools: vedic narrative (32: career-outlook/
 	// dasha-phal/dasha-tree-phal/doshas/finance-outlook/horoscope-daily-
 	// by-lagna/by-moon/tamil/weekly-by-lagna/by-moon/house-lord/house-lords-

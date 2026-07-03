@@ -142,7 +142,7 @@ Any MCP-aware client supports the same shape — `command` + `env` with the abso
 
 ## Tools
 
-The MCP server exposes 288 tools across Vedic and Western astrology. See [docs/TOOLS.md](docs/TOOLS.md) for the full catalog.
+The MCP server exposes 300 tools across Vedic and Western astrology. See [docs/TOOLS.md](docs/TOOLS.md) for the full catalog.
 
 **High-level coverage:**
 
@@ -207,7 +207,7 @@ make build-all VERSION=0.3.0
 
 ## Roadmap
 
-- **v0.3.x (current):** Local stdio MCP server, 288 tools
+- **v0.3.x (current):** Local stdio MCP server, 300 tools
 - **v1.0 (planned):** Stable tool surface; semantic versioning kicks in
 - **Remote HTTP MCP (separate project):** Hosted MCP endpoint at `mcp.divyastroapi.com` for ChatGPT and web/mobile MCP clients — tracked separately from this repo
 
